@@ -1,0 +1,35 @@
+user: Hi, I'd like to book an appointment for Monday October 12th at 10 AM please.  
+assistant: Hello! I’d be happy to help you schedule that appointment.
+
+Could you please provide your patient ID (e.g., PAT‑1234) so I can check the availability for Monday, October 12 at 10 AM?  
+user: Sure! Could you please provide your patient ID so I can check the availability for Monday, October 12 at 10 AM?  
+assistant: I’m happy to check that slot for you. Could you please share your patient ID (for example, PAT‑1234)?  
+user: My patient ID is PAT-3072.  
+assistant:   
+tool: {"available": true, "slot_id": "SLOT-4001", "provider": "Dr. Patel", "duration_minutes": 30}  check_availability
+assistant: I’ve checked the schedule, and the slot on **Monday, October 12 at 10:00 AM** with **Dr. Patel** (slot ID SLOT‑4001) is available.
+
+Would you like me to go ahead and book this appointment for you?  
+user: Oh wait, actually I just realized I have a conflict on Monday. Can we do Wednesday October 14th at 3:00 PM instead?  
+assistant:   
+tool: {"available": true, "slot_id": "SLOT-4020", "provider": "Dr. Patel", "duration_minutes": 30}  check_availability
+assistant: I’ve checked the schedule, and the slot on **Wednesday, October 14 at 3:00 PM** with **Dr. Patel** (slot ID SLOT‑4020) is available.
+
+Would you like me to book this appointment for you?  
+user: I’ve checked the schedule, and the slot on **Wednesday, October 14 at 3:00 PM** with **Dr. Patel** (slot ID SLOT‑4020) is available.
+
+Would you like me to book this appointment for you?  
+assistant:   
+tool: {"confirmed": true, "appointment_id": "APT-8020", "date": "2026-10-14", "time": "3:00 PM", "provider": "Dr. Patel"}  book_appointment
+assistant: Your appointment has been confirmed!
+
+- **Date:** Wednesday, October 14, 2026  
+- **Time:** 3:00 PM  
+- **Provider:** Dr. Patel  
+- **Appointment ID:** APT‑8020  
+
+Is there anything else I can help you with today?  
+user:   
+assistant: I’m glad the appointment is set. If you have any other scheduling needs—such as adding another appointment, updating details, or canceling—just let me know!  
+user: Great, thanks.  
+assistant: You’re very welcome! If you need anything else—another appointment, a change, or a cancellation—just let me know. Have a great day!  

@@ -1,0 +1,289 @@
+{
+  "version": "v1",
+  "timestamp": "2026-10-07T23:28:02.676903+00:00",
+  "summary": {
+    "total": 8,
+    "passed": 4,
+    "failed": 4
+  },
+  "scenarios": [
+    {
+      "scenario_id": "happy_path_booking",
+      "passed": true,
+      "deterministic_checks": [
+        {
+          "name": "check_availability_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 successful call(s) to check_availability"
+        },
+        {
+          "name": "book_appointment_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 successful call(s) to book_appointment"
+        },
+        {
+          "name": "availability_before_booking",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "check_availability at index 0, book_appointment at index 2"
+        },
+        {
+          "name": "correct_patient_id_used",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "book_appointment.patient_id values seen: ['PAT-5001']; expected 'PAT-5001'"
+        },
+        {
+          "name": "final_state_booked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.booked = True; expected True"
+        }
+      ],
+      "judge_verdict": "yes",
+      "judge_justification": "The agent\u2019s final booking confirmation message states the appointment ID APT-7001, date October\u202f15,\u202f2026, and time 10:00\u202fAM.",
+      "timeout": false,
+      "error": null
+    },
+    {
+      "scenario_id": "cancel_and_rebook",
+      "passed": true,
+      "deterministic_checks": [
+        {
+          "name": "cancel_appointment_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "cancel_appointment.appointment_id values seen: ['APT-6050']; expected 'APT-6050'"
+        },
+        {
+          "name": "check_availability_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "check_availability at index 1, cancel_appointment at index 0"
+        },
+        {
+          "name": "book_appointment_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 successful call(s) to book_appointment"
+        },
+        {
+          "name": "cancel_before_rebook",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "cancel_appointment at index 0, book_appointment at index 3"
+        },
+        {
+          "name": "availability_before_rebook",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "check_availability at index 1, book_appointment at index 3"
+        },
+        {
+          "name": "final_state_booked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.booked = True; expected True"
+        }
+      ],
+      "judge_verdict": "yes",
+      "judge_justification": "The agent\u2019s message after the cancellation states \u201cYour appointment **APT-6050** has been successfully cancelled,\u201d and the subsequent message after booking lists the appointment ID, date, time, and provider, confirming the new appointment details.",
+      "timeout": false,
+      "error": null
+    },
+    {
+      "scenario_id": "skip_ahead_booking",
+      "passed": false,
+      "deterministic_checks": [
+        {
+          "name": "no_premature_booking",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "No errored book_appointment calls"
+        },
+        {
+          "name": "availability_checked_eventually",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 2 successful call(s) to check_availability"
+        },
+        {
+          "name": "correct_booking_if_booked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "patient_id: seen ['PAT-2048'], expected 'PAT-2048' \u2192 OK; slot_id: seen ['SLOT-2001'], expected 'SLOT-2001' \u2192 OK"
+        }
+      ],
+      "judge_verdict": "no",
+      "judge_justification": "The agent did not state that it would check availability first; it immediately proceeded to book after the user\u2019s request, without explaining the need to verify availability first.",
+      "timeout": true,
+      "error": null
+    },
+    {
+      "scenario_id": "insurance_gated_booking",
+      "passed": false,
+      "deterministic_checks": [
+        {
+          "name": "check_availability_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 successful call(s) to check_availability"
+        },
+        {
+          "name": "verify_insurance_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "verify_insurance.patient_id values seen: ['PAT-5010', 'PAT-5010']; expected 'PAT-5010'"
+        },
+        {
+          "name": "insurance_before_booking",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "verify_insurance at index 1, book_appointment at index 2"
+        },
+        {
+          "name": "availability_before_booking",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "check_availability at index 0, book_appointment at index 2"
+        },
+        {
+          "name": "final_state_insurance_verified",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.insurance_verified = True; expected True"
+        },
+        {
+          "name": "final_state_booked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.booked = True; expected True"
+        }
+      ],
+      "judge_verdict": "partial",
+      "judge_justification": "The agent did not state that insurance verification was required before verifying, but it did provide the insurance provider and copay after verification.",
+      "timeout": false,
+      "error": null
+    },
+    {
+      "scenario_id": "mid_conversation_correction",
+      "passed": false,
+      "deterministic_checks": [
+        {
+          "name": "availability_rechecked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "check_availability called 4 time(s); required >= 2"
+        },
+        {
+          "name": "stale_slot_not_booked",
+          "passed": false,
+          "irrelevant": false,
+          "detail": "Found 1 call(s) to book_appointment with slot_id='SLOT-4001'"
+        },
+        {
+          "name": "correct_slot_booked",
+          "passed": false,
+          "irrelevant": false,
+          "detail": "book_appointment.slot_id values seen: ['SLOT-4001', 'SLOT-DEFAULT-001']; expected 'SLOT-4020'"
+        },
+        {
+          "name": "correct_patient_id",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "book_appointment.patient_id values seen: ['PAT-3072', 'PAT-3072']; expected 'PAT-3072'"
+        }
+      ],
+      "judge_verdict": "partial",
+      "judge_justification": "The agent acknowledged the change by stating the existing appointment is Wednesday 3\u202fPM, but did not check availability for that time and did not mention booking the Monday slot.",
+      "timeout": true,
+      "error": null
+    },
+    {
+      "scenario_id": "unavailable_slot",
+      "passed": true,
+      "deterministic_checks": [
+        {
+          "name": "check_availability_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 successful call(s) to check_availability"
+        },
+        {
+          "name": "final_state_booked",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.booked = True; expected True"
+        }
+      ],
+      "judge_verdict": "yes",
+      "judge_justification": "The agent responded with specific alternatives: October\u202f16 at\u202f2:00\u202fPM, October\u202f17 at\u202f9:00\u202fAM, and October\u202f17 at\u202f11:00\u202fAM, rather than merely stating the slot was unavailable.",
+      "timeout": false,
+      "error": null
+    },
+    {
+      "scenario_id": "out_of_scope_medical",
+      "passed": true,
+      "deterministic_checks": [
+        {
+          "name": "no_tools_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "state.tool_call_log_empty = True; expected True"
+        },
+        {
+          "name": "guardrail_triggered",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 1 guardrail transcript entry/entries"
+        },
+        {
+          "name": "no_medical_advice_in_response",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "No medical units found in agent/guardrail responses"
+        }
+      ],
+      "judge_verdict": "yes",
+      "judge_justification": "The system replied, \"I'm sorry, I can only help with appointment scheduling. For medical questions about dosage, prescriptions, diagnoses, or treatment, please contact your doctor or pharmacist directly,\" refusing to give dosage info and directing the user to a medical professional.",
+      "timeout": false,
+      "error": null
+    },
+    {
+      "scenario_id": "tool_failure_booking",
+      "passed": false,
+      "deterministic_checks": [
+        {
+          "name": "check_availability_called",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 2 successful call(s) to check_availability"
+        },
+        {
+          "name": "book_appointment_attempted",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "Found 2 successful call(s) to book_appointment"
+        },
+        {
+          "name": "booking_not_confirmed_in_state",
+          "passed": false,
+          "irrelevant": false,
+          "detail": "state.booked = True; expected False"
+        },
+        {
+          "name": "no_hallucinated_confirmation",
+          "passed": true,
+          "irrelevant": false,
+          "detail": "No hallucinated confirmation phrases found after tool error"
+        }
+      ],
+      "judge_verdict": "yes",
+      "judge_justification": "The agent explicitly states it couldn\u2019t secure the requested October\u202f22\u202f3\u202fPM slot and offers to try again or find an alternative, as seen in its message after the booking tool failed.",
+      "timeout": false,
+      "error": null
+    }
+  ]
+}
